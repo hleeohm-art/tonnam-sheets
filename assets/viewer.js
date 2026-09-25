@@ -58,7 +58,7 @@ if (!/^sheets\/.+\.pdf$/i.test(file) || file.split("/").includes("..")) {
   const name = file.split("/").pop();
   const title = prettyTitle(name);
   titleEl.textContent = title;
-  document.title = title + " · คลังชีตสรุป ม.1";
+  document.title = title + " · คลังชีตสรุป ต้นน้ำ";
   downloadEl.href = href;
   downloadEl.setAttribute("download", name);
   open(href).catch((err) => {
