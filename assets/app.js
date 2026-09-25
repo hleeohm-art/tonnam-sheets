@@ -64,18 +64,22 @@
     return esc(title.slice(0, i)) + "<mark>" + esc(title.slice(i, i + n)) + "</mark>" + esc(title.slice(i + n));
   }
 
-  function sheetHtml(s, color, q) {
+  function sheetHtml(s, q) {
     var href = encPath(s.path);
     var view = "viewer.html?file=" + encodeURIComponent(s.path);
     var fileName = s.path.split("/").pop();
     return (
-      '<li class="sheet" style="--c:' + color + '">' +
-        '<div class="sheet-info">' +
-          '<a class="sheet-title" href="' + view + '">' + highlight(s.title, q) + "</a>" +
-          '<div class="sheet-meta">PDF · ' + fmtSize(s.size) + " · " + fmtDate(s.updated) +
-            (isNew(s.updated) ? '<span class="badge-new">ใหม่</span>' : "") +
-          "</div>" +
-        "</div>" +
+      '<li class="sheet">' +
+        '<a class="sheet-main" href="' + view + '">' +
+          '<span class="sheet-thumb" aria-hidden="true"><b>PDF</b></span>' +
+          '<span class="sheet-info">' +
+            '<span class="sheet-title">' + highlight(s.title, q) + "</span>" +
+            '<span class="sheet-meta">' +
+              "<span>" + fmtSize(s.size) + "</span><span>" + fmtDate(s.updated) + "</span>" +
+              (isNew(s.updated) ? '<span class="badge-new">ใหม่</span>' : "") +
+            "</span>" +
+          "</span>" +
+        "</a>" +
         '<div class="sheet-actions">' +
           '<a class="btn btn-primary" href="' + view + '">' + ICON_EYE + "เปิดดู</a>" +
           '<a class="btn" href="' + href + '" download="' + esc(fileName) + '">' + ICON_DOWN + "ดาวน์โหลด</a>" +
@@ -103,12 +107,15 @@
     // ปุ่มหมวดวิชา
     var chips = [{ id: "all", name: "ทั้งหมด", icon: "" }].concat(subjects);
     chipsEl.innerHTML = chips.map(function (c) {
+      var style = COLORS[c.id] ? ' style="--c:' + COLORS[c.id] + '"' : "";
       return (
-        '<button type="button" class="chip" data-id="' + c.id + '" aria-pressed="' + (active === c.id) + '">' +
-          (c.icon ? c.icon + " " : "") + esc(c.name) + '<span class="n">' + counts[c.id] + "</span>" +
+        '<button type="button" class="chip" data-id="' + c.id + '" aria-pressed="' + (active === c.id) + '"' + style + ">" +
+          (c.icon ? "<span>" + c.icon + "</span>" : "") + esc(c.name) + '<span class="n">' + counts[c.id] + "</span>" +
         "</button>"
       );
     }).join("");
+    var activeChip = chipsEl.querySelector('[aria-pressed="true"]');
+    if (activeChip) chipsEl.scrollLeft = Math.max(0, activeChip.offsetLeft - chipsEl.offsetLeft - (chipsEl.clientWidth - activeChip.offsetWidth) / 2);
 
     // รายการชีต
     var html = filtered.map(function (f) {
@@ -120,17 +127,17 @@
         '<section class="subject" id="' + f.sub.id + '" style="--c:' + color + '">' +
           '<div class="subject-head">' +
             '<div class="subject-icon" aria-hidden="true">' + f.sub.icon + "</div>" +
-            "<div><h2>" + esc(f.sub.name) + '</h2><div class="count">' + f.sheets.length + " ชีต</div></div>" +
+            "<h2>" + esc(f.sub.name) + '</h2><span class="count">' + f.sheets.length + " ชีต</span>" +
           "</div>" +
           (f.sheets.length
-            ? '<ul class="sheet-list">' + f.sheets.map(function (s) { return sheetHtml(s, color, q); }).join("") + "</ul>"
-            : '<div class="empty">ยังไม่มีชีตในวิชานี้ เร็วๆ นี้นะ 🙂</div>') +
+            ? '<ul class="sheet-list">' + f.sheets.map(function (s) { return sheetHtml(s, q); }).join("") + "</ul>"
+            : '<div class="empty"><span class="e-icon" aria-hidden="true">🌱</span><span><b>ยังไม่มีชีตในวิชานี้</b>เดี๋ยวมีมาเพิ่มเร็วๆ นี้นะ</span></div>') +
         "</section>"
       );
     }).join("");
 
     if (nq && total === 0) {
-      html = '<div class="notice"><strong>ไม่พบชีตที่ชื่อมีคำว่า “' + esc(q.trim()) + '”</strong>ลองพิมพ์คำอื่น หรือเลือก “ทั้งหมด”</div>';
+      html = '<div class="notice"><span class="e-icon" aria-hidden="true">🔍</span><strong>ไม่พบชีตที่ชื่อมีคำว่า “' + esc(q.trim()) + '”</strong>ลองพิมพ์คำอื่น หรือเลือก “ทั้งหมด”</div>';
     }
     listEl.innerHTML = html;
   }
@@ -170,6 +177,11 @@
       var fromHash = location.hash.slice(1);
       if (subjects.some(function (s) { return s.id === fromHash; })) active = fromHash;
       render();
+      var all = [].concat.apply([], subjects.map(function (s) { return s.sheets; }));
+      var fresh = all.filter(function (s) { return isNew(s.updated); }).length;
+      document.getElementById("stat-total").textContent = "📄 " + all.length + " ชีต";
+      document.getElementById("stat-subjects").textContent = "🗂️ " + subjects.length + " หมวด";
+      document.getElementById("stat-new").textContent = fresh ? "✨ ใหม่ " + fresh + " ชีต" : "";
       if (data.generatedAt) footEl.textContent = "อัปเดตรายการล่าสุด " + fmtDate(data.generatedAt);
     })
     .catch(function () {
