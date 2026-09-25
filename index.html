@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>คลังชีตสรุป ม.1</title>
+  <meta name="description" content="รวมชีตสรุปบทเรียน ม.1 แยกตามวิชา เปิดดูและดาวน์โหลดได้ฟรี">
+  <meta name="theme-color" content="#f6f4ef" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#15171c" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header class="site-head wrap">
+    <h1>📚 คลังชีตสรุป ม.1</h1>
+    <p>ชีตสรุปบทเรียนทุกวิชา กดเปิดอ่านหรือดาวน์โหลดเก็บไว้ได้เลย</p>
+  </header>
+
+  <div class="toolbar" id="toolbar">
+    <div class="wrap">
+      <label class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="ค้นหาชื่อชีต เช่น เซลล์, จำนวนเต็ม" autocomplete="off" enterkeyhint="search" aria-label="ค้นหาชื่อชีต">
+        <button class="clear" id="clear" type="button" aria-label="ล้างคำค้นหา" hidden>×</button>
+      </label>
+      <nav class="chips" id="chips" aria-label="เลือกวิชา"></nav>
+    </div>
+  </div>
+
+  <main class="wrap" id="list">
+    <p class="notice">กำลังโหลดรายการชีต…</p>
+  </main>
+
+  <footer class="site-foot wrap" id="foot"></footer>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>
