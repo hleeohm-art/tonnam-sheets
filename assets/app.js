@@ -155,6 +155,12 @@
     if (btn) setActive(btn.getAttribute("data-id"));
   });
 
+  // นับสถิติการดาวน์โหลดแต่ละชีต
+  listEl.addEventListener("click", function (e) {
+    var a = e.target.closest("a[download]");
+    if (a && window.track) window.track("ดาวน์โหลด: " + a.closest(".sheet").querySelector(".sheet-title").textContent, "ดาวน์โหลดชีต", true);
+  });
+
   qEl.addEventListener("input", render);
   clearEl.addEventListener("click", function () {
     qEl.value = "";

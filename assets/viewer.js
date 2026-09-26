@@ -61,6 +61,10 @@ if (!/^sheets\/.+\.pdf$/i.test(file) || file.split("/").includes("..")) {
   document.title = title + " · คลังชีตสรุป ต้นน้ำ";
   downloadEl.href = href;
   downloadEl.setAttribute("download", name);
+  if (window.track) {
+    window.track("เปิดดู: " + title, "เปิดดูชีต");
+    downloadEl.addEventListener("click", () => window.track("ดาวน์โหลด: " + title, "ดาวน์โหลดชีต", true));
+  }
   open(href).catch((err) => {
     console.error(err);
     showError("เปิดชีตในหน้านี้ไม่สำเร็จ ลองเปิดไฟล์โดยตรงแทนนะ", href);
